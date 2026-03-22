@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Category } from '../types';
 import { CATEGORIES } from '../constants';
-import { Globe, Star, Tv, Trophy, Music, Film, Newspaper, Heart, Plus, CloudDownload, Trash2, X } from 'lucide-react';
+import { Globe, Star, Tv, Trophy, Music, Film, Newspaper, Heart, Plus, CloudDownload, Trash2, X, Copy, CheckCircle, ListPlus } from 'lucide-react';
 
 interface CategoriesViewProps {
   onSelectCategory: (category: Category) => void;
@@ -12,6 +12,77 @@ interface CategoriesViewProps {
   onDeleteCustom: (id: string) => void;
 }
 
+// 🔥 SPECIAL VIP PLAYLISTS DIRECTORY COMPONENT
+const SPECIAL_PLAYLISTS = [
+  { 
+    name: "🏏 Fancode Live Sports", 
+    url: "https://raw.githubusercontent.com/dartv-ajaz/tataplay/main/dartv_fancode.m3u" 
+  },
+  { 
+    name: "📺 Tata Play Premium", 
+    url: "https://raw.githubusercontent.com/dartv-ajaz/tataplay/main/tata_play.m3u" 
+  }
+];
+
+const PlaylistDirectory = () => {
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+
+  const handleCopy = (url: string, index: number) => {
+    navigator.clipboard.writeText(url);
+    setCopiedIndex(index);
+    setTimeout(() => {
+      setCopiedIndex(null);
+    }, 2000);
+  };
+
+  return (
+    <div className="p-5 bg-gradient-to-br from-[#1a1d24] to-[#121419] rounded-2xl border border-[#00b865]/20 w-full mb-8 shadow-lg">
+      <div className="flex items-center gap-3 mb-4 pb-3 border-b border-white/10">
+        <ListPlus className="w-5 h-5 text-[#00b865]" />
+        <h2 className="text-lg font-black text-white uppercase tracking-wider">
+          Special VIP Links
+        </h2>
+      </div>
+      
+      <p className="text-xs text-gray-400 mb-5 leading-relaxed">
+        Copy these secure links and paste them in the <b>"Add M3U Playlist"</b> section below to unlock Fancode and Tata Play.
+      </p>
+
+      <div className="flex flex-col md:flex-row gap-3">
+        {SPECIAL_PLAYLISTS.map((playlist, index) => (
+          <div 
+            key={index} 
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-black/40 rounded-xl border border-white/5 flex-1 hover:border-[#00b865]/30 transition-colors"
+          >
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold text-gray-200 text-sm mb-1">{playlist.name}</h3>
+              <p className="text-[10px] text-gray-500 truncate font-mono bg-black/50 p-1.5 rounded">
+                {playlist.url}
+              </p>
+            </div>
+            
+            <button
+              onClick={() => handleCopy(playlist.url, index)}
+              className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all shrink-0 ${
+                copiedIndex === index 
+                  ? 'bg-[#00b865] text-black shadow-[0_0_10px_rgba(0,184,101,0.3)]' 
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+            >
+              {copiedIndex === index ? (
+                <><CheckCircle size={14} /> Copied!</>
+              ) : (
+                <><Copy size={14} /> Copy</>
+              )}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// 🔥 MAIN CATEGORIES VIEW
 const CategoriesView: React.FC<CategoriesViewProps> = ({ 
     onSelectCategory, favoritesCount, cloudCategories, customCategories, onAddCustom, onDeleteCustom 
 }) => {
@@ -106,6 +177,11 @@ const CategoriesView: React.FC<CategoriesViewProps> = ({
         </button>
       </div>
 
+      {/* 🔥 NAYA PLAYLIST DIRECTORY DABBA YAHAN HAI */}
+      <div className="px-2">
+        <PlaylistDirectory />
+      </div>
+
       {/* DYNAMIC SECTIONS */}
       <CategorySection title="My Custom Playlists" items={customCategories} isCustom={true} />
       {cloudCategories.length > 0 && <CategorySection title="Cloud Playlists (New)" items={cloudCategories} />}
@@ -128,11 +204,11 @@ const CategoriesView: React.FC<CategoriesViewProps> = ({
                   <div className="p-6 flex flex-col gap-4">
                       <div className="space-y-2">
                           <label className="text-xs font-bold text-gray-400 uppercase">Playlist Name</label>
-                          <input type="text" placeholder="e.g., Live Sports TV" value={newName} onChange={(e) => setNewName(e.target.value)} className="w-full bg-[#0f1115] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500" />
+                          <input type="text" placeholder="e.g., Fancode Live" value={newName} onChange={(e) => setNewName(e.target.value)} className="w-full bg-[#0f1115] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500" />
                       </div>
                       <div className="space-y-2">
                           <label className="text-xs font-bold text-gray-400 uppercase">M3U URL</label>
-                          <input type="text" placeholder="https://example.com/playlist.m3u" value={newUrl} onChange={(e) => setNewUrl(e.target.value)} className="w-full bg-[#0f1115] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500" />
+                          <input type="text" placeholder="Paste link here..." value={newUrl} onChange={(e) => setNewUrl(e.target.value)} className="w-full bg-[#0f1115] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500" />
                       </div>
                       <button onClick={handleSaveCustom} className="mt-2 w-full bg-green-500 hover:bg-green-600 text-black font-black uppercase tracking-widest py-3 rounded-xl transition-all active:scale-95 shadow-lg">
                           Save Playlist

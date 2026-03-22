@@ -38,8 +38,9 @@ const TSPORTS_COMBINE_URL = 'https://raw.githubusercontent.com/abusaeeidx/T-Spor
 const LX_URL = 'https://raw.githubusercontent.com/raid35/channel-links/main/LX.m3u';
 const BEIN_URL = 'https://is.gd/xdFAu6.m3u'; 
 
-// 🔥 NAYI INDIAN PLAYLIST YAHAN ADD HUI HAI
+// 🔥 INDIAN PLAYLIST
 const INDIAN_URL = 'https://raw.githubusercontent.com/praneshpaulose/Kerala/af18ac3b046b0121c5429c898a2db197ceaeee0a/FMall.m3u';
+const FANCODE_M3U_URL = 'https://raw.githubusercontent.com/dartv-ajaz/tataplay/main/dartv_fancode.m3u';
 
 const App: React.FC = () => {
   const [activeView, setActiveView] = useState<AppScreen>('live-events');
@@ -116,7 +117,12 @@ const App: React.FC = () => {
 
   const fetchM3UText = async (originalUrl: string) => {
     try {
-      const res = await fetch(originalUrl);
+      const myProxy = "https://dartv-super-proxy.darajazb.workers.dev/?url=";
+      const finalUrl = (originalUrl.includes('raw.githubusercontent.com') || originalUrl.includes('github') || originalUrl.startsWith('http://')) 
+         ? myProxy + encodeURIComponent(originalUrl) 
+         : originalUrl;
+
+      const res = await fetch(finalUrl);
       if (!res.ok) throw new Error('Direct fetch blocked');
       return await res.text();
     } catch (e) {
@@ -145,19 +151,19 @@ const App: React.FC = () => {
       let newCloudCats: Category[] = [];
 
       newCloudCats.push({ id: 'cat-combined', name: '📺 All Live TV (Pirates)', playlistUrl: DEFAULT_M3U });
+      
+      // 🔥 THE VIP MASTER HUB CARD
+      newCloudCats.push({ id: 'cat-master-hub', name: '👑 All-In-One VIP Players', playlistUrl: 'internal' });
 
-      // 🔥 SAARI PLAYLISTS (Nayi Indian playlist list mein shamil hai)
       const apiConfigs: any[] = [
         { id: 'cat-sultan', name: '👑 Sultan VIP', url: SULTAN_URL, type: 'json', key: 'channels' },
         { id: 'cat-group-b', name: 'Hotstar LIVE', url: GROUP_B_URL, type: 'json', key: 'matches' },
-        { id: 'cat-fancode', name: '🏏 Fancode Live (Full)', url: FANCODE_URL, type: 'json', key: 'matches' },
+        { id: 'cat-fancode', name: '🏏 Fancode Live (Events)', url: FANCODE_URL, type: 'json', key: 'matches' },
         { id: 'cat-vip', name: '⚡ VIP Cricket', url: VIP_URL, type: 'json', key: 'channels' },
         { id: 'cat-lx', name: '🔥 LX Premium', url: LX_URL, type: 'm3u', key: 'channels' }, 
         { id: 'cat-bein', name: '⚽ Bein Sports', url: BEIN_URL, type: 'm3u', key: 'channels' }, 
-        
-        // 👇 INDIAN KHAZANA
         { id: 'cat-indian', name: '🇮🇳 Indian', url: INDIAN_URL, type: 'm3u', key: 'channels' }, 
-        
+        { id: 'cat-fancode-m3u', name: '🏏 Fancode (M3U)', url: FANCODE_M3U_URL, type: 'm3u', key: 'channels' }, 
         { id: 'cat-tsports-json', name: '🏆 T-Sports Data', url: TSPORTS_JSON_URL, type: 'json', key: 'channels' },
         { id: 'cat-tsports-comb', name: '🏆 T-Sports Combine', url: TSPORTS_COMBINE_URL, type: 'm3u', key: 'channels' },
         { id: 'cat-cricket', name: 'Cricket TV', url: CRICKET_URL, type: 'json', key: 'channels' },
@@ -246,6 +252,22 @@ const App: React.FC = () => {
         }
       });
 
+      // 🔥 VIP BYPASS: All 10 Web Players from your image embedded directly into DarTV
+      const masterHubChannels: Channel[] = [
+        { id: `ch-master-jtvplus`, name: '🔴 JioTV+ (Worldwide)', logo: 'https://ui-avatars.com/api/?name=Jio+TV&background=000&color=fff', categoryId: 'cat-master-hub', streamUrl: 'https://allinonereborn-jtv.pages.dev/' },
+        { id: `ch-master-jtvind`, name: '🔴 JioTV IND (CatchUp)', logo: 'https://ui-avatars.com/api/?name=Jio+IND&background=ff0000&color=fff', categoryId: 'cat-master-hub', streamUrl: 'https://allinonereborn.online/jio-ind/' },
+        { id: `ch-master-jtvww`, name: '🔴 JioTV Worldwide', logo: 'https://ui-avatars.com/api/?name=Jio+WW&background=ff0000&color=fff', categoryId: 'cat-master-hub', streamUrl: 'https://allinonereborn.online/jio-ww/' },
+        { id: `ch-master-sonyliv`, name: '🌟 SonyLiv (Worldwide)', logo: 'https://ui-avatars.com/api/?name=Sony+Liv&background=000&color=00ffff', categoryId: 'cat-master-hub', streamUrl: 'https://allinonereborn.online/sonyliv/' },
+        { id: `ch-master-sonyevents`, name: '🌟 SonyLiv Events', logo: 'https://ui-avatars.com/api/?name=SL+Events&background=000&color=ffb100', categoryId: 'cat-master-hub', streamUrl: 'https://allinonereborn.online/sonyliv-events/' },
+        { id: `ch-master-zee5`, name: '🎬 Zee5 SD (Worldwide)', logo: 'https://ui-avatars.com/api/?name=Z5&background=000&color=fff', categoryId: 'cat-master-hub', streamUrl: 'https://allinonereborn.online/zee5/' },
+        { id: `ch-master-fancode`, name: '🏏 Fancode (Worldwide)', logo: 'https://ui-avatars.com/api/?name=FC&background=ff5500&color=fff', categoryId: 'cat-master-hub', streamUrl: 'https://allinonereborn.online/fcww/' },
+        { id: `ch-master-airtel`, name: '📺 AirtelTV Web (Worldwide)', logo: 'https://ui-avatars.com/api/?name=Airtel&background=ff0000&color=fff', categoryId: 'cat-master-hub', streamUrl: 'https://allinonereborn.online/airteltv-web/' },
+        { id: `ch-master-tata`, name: '📺 TataTV Web (Worldwide)', logo: 'https://ui-avatars.com/api/?name=Tata&background=0000ff&color=fff', categoryId: 'cat-master-hub', streamUrl: 'https://allinonereborn.online/tataplay/' },
+        { id: `ch-master-iptv`, name: '📡 IPTV Web (Worldwide)', logo: 'https://ui-avatars.com/api/?name=IPTV&background=b100ff&color=fff', categoryId: 'cat-master-hub', streamUrl: 'https://allinonereborn.online/iptv-web/' }
+      ];
+      newCache['cat-master-hub'] = masterHubChannels;
+      currentChannels = [...currentChannels, ...masterHubChannels];
+
       const allSportsLinks: any[] = [];
       const sportsKeywords = ['sports', 'ptv', 'willow', 'ten', 'astro', 'sony', 'a sports', 'geo super', 'espn', 'fox', 'supersport', 'bein', 'tsports', 't-sports'];
       const blockKeywords = ['movie', 'max', 'gold', 'cinema', 'action', 'entertainment', 'jalsha', 'pravah', 'colors', 'star plus', 'zee tv']; 
@@ -256,7 +278,8 @@ const App: React.FC = () => {
 
           if (sportsKeywords.some(kw => nameLow.includes(kw)) && ch.streamUrl !== 'upcoming') {
              const isM3u8 = String(ch.streamUrl || '').includes('.m3u8');
-             const isSultan = ch.categoryId === 'cat-sultan';
+             // 🔥 VIP Categories: Sultan AND Master Hub links get Iframe treatment
+             const isSultan = ch.categoryId === 'cat-sultan' || ch.categoryId === 'cat-master-hub';
              if (!allSportsLinks.find(p => p.url === ch.streamUrl)) {
                  let catName = isSultan ? 'Sultan VIP' : ch.categoryId.replace('cat-', '').toUpperCase();
                  allSportsLinks.push({ name: isSultan ? `⭐ ${ch.name} (VIP)` : `${ch.name} (${catName})`, url: ch.streamUrl, type: isSultan ? 'Iframe' : (isM3u8 ? 'Video' : 'Iframe'), isSultan: isSultan });
@@ -267,7 +290,6 @@ const App: React.FC = () => {
       
       setGlobalMultiLinks(allSportsLinks);
 
-      const now = Date.now();
       const genericMatches = rawMatches.map((m: any, idx: number) => {
           const statusRaw = String(m.status || m.match_status || '').toUpperCase();
           let status = 'Live'; let isHot = true;
@@ -325,13 +347,14 @@ const App: React.FC = () => {
 
   const handleCategorySelect = async (category: Category) => {
     if (category.id === 'cat-global-radio') { handleNavChange('radio'); return; }
+
     setSelectedCategory(category);
     handleNavChange('channel-detail');
     
     if (category.id === 'cat-favorites') { setCategoryChannels(favorites); return; }
     if (playlistCache[category.id] && playlistCache[category.id].length > 0) { setCategoryChannels(playlistCache[category.id]); return; }
     
-    if (category.playlistUrl) {
+    if (category.playlistUrl && category.playlistUrl !== 'internal') {
       setIsCategoryLoading(true); setCategoryChannels([]); 
       try {
         const text = await fetchM3UText(category.playlistUrl);
@@ -367,11 +390,12 @@ const App: React.FC = () => {
   };
 
   const playChannel = (ch: Channel) => {
-    const isSultanCat = ch.categoryId === 'cat-sultan';
+    // 🔥 VIP CHECK: Sultan and Master Hub both use Native Iframe
+    const isIframeCat = ch.categoryId === 'cat-sultan' || ch.categoryId === 'cat-master-hub';
     setSelectedMatch({ 
         id: ch.id, 
         team1: ch.name, 
-        team2: 'Network Mirror', 
+        team2: 'VIP Server', 
         team1Logo: ch.logo, 
         team2Logo: ch.logo, 
         league: selectedCategory?.name || 'Live TV', 
@@ -379,8 +403,8 @@ const App: React.FC = () => {
         time: 'Live', 
         sport: 'Other', 
         streamUrl: ch.streamUrl, 
-        type: isSultanCat ? 'Iframe' : undefined, 
-        multiLinks: isSultanCat ? [] : globalMultiLinks 
+        type: isIframeCat ? 'Iframe' : undefined, 
+        multiLinks: isIframeCat ? [] : globalMultiLinks 
     });
     setFloatingMatch(null);
     setActiveView('player');
